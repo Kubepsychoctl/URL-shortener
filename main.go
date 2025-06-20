@@ -5,13 +5,10 @@ import (
 	"net/http"
 )
 
-func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello World")
-}
-
 func main() {
 	router := http.NewServeMux()
-	router.HandleFunc("/hello", hello)
+	NewHelloHandler(router)
+
 	server := http.Server{
 		Addr:    ":8080",
 		Handler: router,
