@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"app/url-shorter/internal/hello"
+	// "app/url-shorter/configs"
+	"app/url-shorter/internal/auth"
 )
 
 func main() {
+	// config := configs.LoadConfig()
 	router := http.NewServeMux()
-	hello.NewHelloHandler(router)
+	auth.NewAuthHandler(router)
 
 	server := http.Server{
 		Addr:    ":8080",
