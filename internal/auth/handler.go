@@ -33,6 +33,14 @@ func (handler *AuthHandler) Login() http.HandlerFunc {
 			response.Json(w, err.Error(), 402)
 			return
 		}
+		if payload.Email == "" {
+			response.Json(w, "Email is required", 402)
+			return
+		}
+		if payload.Password == "" {
+			response.Json(w, "Password is required", 402)
+			return
+		}
 		fmt.Println(payload)
 		res := LoginResponse{
 			Token: "1234567890",
