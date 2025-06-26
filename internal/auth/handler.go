@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/mail"
 
 	"app/url-shorter/configs"
 	"app/url-shorter/pkg/response"
@@ -37,6 +38,10 @@ func (handler *AuthHandler) Login() http.HandlerFunc {
 			response.Json(w, "Email is required", 402)
 			return
 		}
+		if !validateEmail(payload.Email) {
+			response.Json(w, "Invalid email", 402)
+			return
+		}
 		if payload.Password == "" {
 			response.Json(w, "Password is required", 402)
 			return
@@ -52,4 +57,9 @@ func (handler *AuthHandler) Login() http.HandlerFunc {
 func (handler *AuthHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 	}
+}
+
+func validateEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
