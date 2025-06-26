@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"app/url-shorter/configs"
+	"app/url-shorter/pkg/response"
 )
 
 type AuthHandlerDeps struct {
@@ -28,12 +28,10 @@ func (handler *AuthHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(handler.Config.Auth.Secret)
 		fmt.Println("Login")
-		response := LoginResponse{
+		res := LoginResponse{
 			Token: "1234567890",
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(201)
-		json.NewEncoder(w).Encode(response)
+		response.Json(w, res, 200)
 	}
 }
 
