@@ -6,10 +6,12 @@ import (
 
 	"app/url-shorter/configs"
 	"app/url-shorter/internal/auth"
+	"app/url-shorter/pkg/db"
 )
 
 func main() {
 	config := configs.LoadConfig()
+	_ = db.NewDb(config)
 	router := http.NewServeMux()
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: config,
