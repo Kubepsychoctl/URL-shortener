@@ -6,6 +6,7 @@ import (
 
 	"app/url-shorter/configs"
 	"app/url-shorter/internal/auth"
+	"app/url-shorter/internal/link"
 	"app/url-shorter/pkg/db"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: config,
 	})
-
+	link.NewLinkHandler(router, link.LinkHandlerDeps{})
 	server := http.Server{
 		Addr:    ":8080",
 		Handler: router,
