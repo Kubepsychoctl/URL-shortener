@@ -3,6 +3,9 @@ package link
 import (
 	"fmt"
 	"net/http"
+
+	"app/url-shorter/pkg/request"
+	"app/url-shorter/pkg/response"
 )
 
 type LinkHandlerDeps struct {
@@ -25,6 +28,17 @@ func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 
 func (handler *LinkHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		body, err := request.HandleBody[LinkCreateRequest](&w, r)
+		if err != nil {
+			return
+		}
+		link := NewLink(body.URL)
+		createdLink, err := handler.LinkRepo.Create(link)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		response.Json(w, createdLink, 201)
 	}
 }
 
