@@ -1,7 +1,6 @@
 package link
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -79,8 +78,18 @@ func (handler *LinkHandler) Update() http.HandlerFunc {
 
 func (handler *LinkHandler) Delete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")
-		fmt.Println(id)
+		idStr := r.PathValue("id")
+		id, err := strconv.ParseUint(idStr, 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		err = handler.LinkRepo.Delete(id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		response.Json(w, nil, 200)
 	}
 }
 
