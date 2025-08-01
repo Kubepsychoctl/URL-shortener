@@ -25,7 +25,7 @@ func main() {
 	})
 	server := http.Server{
 		Addr:    ":8080",
-		Handler: middleware.Logging(router),
+		Handler: middleware.CORS(middleware.Logging(router)),
 	}
 
 	fmt.Println("Server is running on port 8080")
