@@ -8,6 +8,7 @@ import (
 	"app/url-shorter/internal/auth"
 	"app/url-shorter/internal/link"
 	"app/url-shorter/pkg/db"
+	"app/url-shorter/pkg/middleware"
 )
 
 func main() {
@@ -24,7 +25,7 @@ func main() {
 	})
 	server := http.Server{
 		Addr:    ":8080",
-		Handler: router,
+		Handler: middleware.Logging(router),
 	}
 
 	fmt.Println("Server is running on port 8080")
