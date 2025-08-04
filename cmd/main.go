@@ -7,6 +7,7 @@ import (
 	"app/url-shorter/configs"
 	"app/url-shorter/internal/auth"
 	"app/url-shorter/internal/link"
+	"app/url-shorter/internal/user"
 	"app/url-shorter/pkg/db"
 	"app/url-shorter/pkg/middleware"
 )
@@ -17,8 +18,11 @@ func main() {
 	router := http.NewServeMux()
 
 	linkRepo := link.NewLinkRepository(db)
+	userRepo := user.NewUserRepository(db)
+	authService := auth.NewUserService(userRepo)
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
-		Config: config,
+		Config:      config,
+		AuthService: authService,
 	})
 	link.NewLinkHandler(router, link.LinkHandlerDeps{
 		LinkRepo: linkRepo,
