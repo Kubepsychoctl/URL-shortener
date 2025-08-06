@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"app/url-shorter/configs"
 	"app/url-shorter/pkg/middleware"
 	"app/url-shorter/pkg/request"
 	"app/url-shorter/pkg/response"
@@ -13,6 +14,7 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepo *LinkRepository
+	Config   *configs.Config
 }
 
 type LinkHandler struct {
@@ -24,7 +26,7 @@ func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 		LinkRepo: deps.LinkRepo,
 	}
 	router.HandleFunc("POST /link", handler.Create())
-	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update()))
+	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
 	router.HandleFunc("DELETE /link/{id}", handler.Delete())
 	router.HandleFunc("GET /{hash}", handler.GoTo())
 }

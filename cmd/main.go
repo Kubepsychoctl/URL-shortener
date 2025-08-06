@@ -26,6 +26,7 @@ func main() {
 	})
 	link.NewLinkHandler(router, link.LinkHandlerDeps{
 		LinkRepo: linkRepo,
+		Config:   config,
 	})
 	stack := middleware.Chain(
 		middleware.CORS,
