@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"app/url-shorter/configs"
+	"app/url-shorter/internal/stat"
 	"app/url-shorter/pkg/middleware"
 	"app/url-shorter/pkg/request"
 	"app/url-shorter/pkg/response"
@@ -15,16 +16,19 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepo *LinkRepository
+	StatRepo *stat.StatRepository
 	Config   *configs.Config
 }
 
 type LinkHandler struct {
 	LinkRepo *LinkRepository
+	StatRepo *stat.StatRepository
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	handler := &LinkHandler{
 		LinkRepo: deps.LinkRepo,
+		StatRepo: deps.StatRepo,
 	}
 	router.HandleFunc("POST /link", handler.Create())
 	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
@@ -115,6 +119,7 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
+		handler.StatRepo.AddClick(link.ID)
 		http.Redirect(w, r, link.URL, http.StatusTemporaryRedirect)
 	}
 }
