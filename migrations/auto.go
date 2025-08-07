@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"app/url-shorter/internal/link"
+	"app/url-shorter/internal/stat"
 	"app/url-shorter/internal/user"
 
 	"github.com/joho/godotenv"
@@ -21,5 +22,5 @@ func main() {
 	if err != nil {
 		log.Fatal("Error connecting to database")
 	}
-	db.AutoMigrate(&link.Link{}, &user.User{})
+	db.AutoMigrate(&link.Link{}, &user.User{}, &stat.Stat{})
 }
