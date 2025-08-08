@@ -7,9 +7,9 @@ import (
 	"app/url-shorter/configs"
 	"app/url-shorter/internal/auth"
 	"app/url-shorter/internal/link"
-	"app/url-shorter/internal/stat"
 	"app/url-shorter/internal/user"
 	"app/url-shorter/pkg/db"
+	"app/url-shorter/pkg/event"
 	"app/url-shorter/pkg/middleware"
 )
 
@@ -17,10 +17,11 @@ func main() {
 	config := configs.LoadConfig()
 	db := db.NewDb(config)
 	router := http.NewServeMux()
+	eventBus := event.NewEventBus()
 
 	linkRepo := link.NewLinkRepository(db)
 	userRepo := user.NewUserRepository(db)
-	statRepo := stat.NewStatRepository(db)
+	// statRepo := stat.NewStatRepository(db)
 	authService := auth.NewUserService(userRepo)
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config:      config,
@@ -28,7 +29,7 @@ func main() {
 	})
 	link.NewLinkHandler(router, link.LinkHandlerDeps{
 		LinkRepo: linkRepo,
-		StatRepo: statRepo,
+		EventBus: eventBus,
 		Config:   config,
 	})
 	stack := middleware.Chain(
