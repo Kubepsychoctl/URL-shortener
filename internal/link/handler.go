@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"app/url-shorter/configs"
-	"app/url-shorter/internal/stat"
+	"app/url-shorter/pkg/di"
 	"app/url-shorter/pkg/middleware"
 	"app/url-shorter/pkg/request"
 	"app/url-shorter/pkg/response"
@@ -16,13 +16,13 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepo *LinkRepository
-	StatRepo *stat.StatRepository
+	StatRepo di.IStatRepository
 	Config   *configs.Config
 }
 
 type LinkHandler struct {
 	LinkRepo *LinkRepository
-	StatRepo *stat.StatRepository
+	StatRepo di.IStatRepository
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
