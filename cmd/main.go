@@ -14,7 +14,7 @@ import (
 	"app/url-shorter/pkg/middleware"
 )
 
-func main() {
+func Init() http.Handler {
 	config := configs.LoadConfig()
 	db := db.NewDb(config)
 	router := http.NewServeMux()
@@ -47,17 +47,22 @@ func main() {
 		Config:   config,
 	})
 
+	go statService.AddClick()
+
 	// Middleware
 	stack := middleware.Chain(
 		middleware.CORS,
 		middleware.Logging,
 	)
+	return stack(router)
+}
+
+func main() {
+	app := Init()
 	server := http.Server{
 		Addr:    ":8080",
-		Handler: stack(router),
+		Handler: app,
 	}
-	go statService.AddClick()
-
 	fmt.Println("Server is running on port 8080")
 	server.ListenAndServe()
 }
