@@ -58,7 +58,7 @@ A high-performance URL shortening service built with Go, featuring authenticatio
 
 1. **Clone the repository**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/Kubepsychoctl/URL-shortener/
    cd URL-shortener
    ```
 
