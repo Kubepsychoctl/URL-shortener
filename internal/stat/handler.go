@@ -3,14 +3,14 @@ package stat
 import (
 	"app/url-shorter/configs"
 	"app/url-shorter/pkg/middleware"
-	"fmt"
+	"app/url-shorter/pkg/response"
 	"net/http"
 	"time"
 )
 
 const (
-	FilterByDay   = "day"
-	FilterByMonth = "month"
+	GroupByDay   = "day"
+	GroupByMonth = "month"
 )
 
 type StatHandlerDeps struct {
@@ -43,10 +43,11 @@ func (handler *StatHandler) GetStat() http.HandlerFunc {
 			return
 		}
 		by := r.URL.Query().Get("by")
-		if by != FilterByDay && by != FilterByMonth {
+		if by != GroupByDay && by != GroupByMonth {
 			http.Error(w, "Invalid by parameter", http.StatusBadRequest)
 			return
 		}
-		fmt.Println(from, to, by)
+		stats := handler.StatRepo.GetStat(by, from, to)
+		response.Json(w, stats, http.StatusOK)
 	}
 }
